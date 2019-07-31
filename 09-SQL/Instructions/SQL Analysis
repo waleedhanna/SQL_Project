@@ -1,0 +1,155 @@
+
+-- ERD Script
+
+CREATE TABLE "departments" (
+    "dept_no" VARCHAR   NOT NULL,
+    "dept_name" VARCHAR   NOT NULL,
+    CONSTRAINT "pk_departments" PRIMARY KEY (
+        "dept_no"
+     )
+);
+
+CREATE TABLE "dept_emp" (
+    "emp_no" INT   NOT NULL,
+    "dept_no" VARCHAR   NOT NULL,
+    "from_date" DATE   NOT NULL,
+    "to_date" DATE   NOT NULL
+);
+
+CREATE TABLE "dept_manager" (
+    "dept_no" VARCHAR   NOT NULL,
+    "emp_no" INT   NOT NULL,
+    "from_date" DATE   NOT NULL,
+    "to_date" DATE   NOT NULL
+);
+
+CREATE TABLE "employees" (
+    "emp_no" INT   NOT NULL,
+    "birth_date" DATE   NOT NULL,
+    "first_name" VARCHAR   NOT NULL,
+    "last_name" VARCHAR   NOT NULL,
+    "gender" VARCHAR   NOT NULL,
+    "hire_date" DATE   NOT NULL,
+    CONSTRAINT "pk_employees" PRIMARY KEY (
+        "emp_no"
+     )
+);
+
+CREATE TABLE "salaries" (
+    "emp_no" INT   NOT NULL,
+    "salary" INT   NOT NULL,
+    "from_date" DATE   NOT NULL,
+    "to_date" DATE   NOT NULL
+);
+
+CREATE TABLE "titles" (
+    "emp_no" INT   NOT NULL,
+    "title" VARCHAR   NOT NULL,
+    "from_date" DATE   NOT NULL,
+    "to_date" DATE   NOT NULL
+);
+
+## Data Analysis
+
+#1- List the following details of each employee: employee number, last name, first name, gender, and salary.
+
+    select e.emp_no, e.last_name, e.first_name, e.gender, s.salary
+	INTO employee_salary
+	from employees as e
+	join salaries as s
+	using(emp_no)
+    
+# 2- List employees who were hired in 1986.
+    select emp_no, first_name, last_name, hire_date 
+    into hired_1986
+    from employees
+    where hire_date between '1986-01-01' and '1987-01-01'
+    
+    
+# 3- List the manager of each department with the following information: department number, department name, the manager's -
+----employee number, last name, first name, and start and end employment dates.
+
+    select departments.dept_no, departments.dept_name, dept_manager.emp_no, employees.last_name, employees.first_name,dept_manager.from_date, dept_manager.to_date
+    into managers_dep_info
+    from departments
+    join dept_manager
+    using (dept_no)
+    join employees
+    using (emp_no)
+
+
+# 4 --List the department of each employee with the following information: 
+-----employee number, last name, first name, and department name.
+
+    select dept_emp.emp_no, employees.last_name, employees.first_name, departments.dept_name
+    into employee_dep
+    from dept_emp
+    join employees
+    using (emp_no)
+    JOIN departments
+    using (dept_no)
+
+# 5-- List all employees whose first name is "Hercules" and last names begin with "B."
+
+    select first_name, last_name
+    into sort_employee
+    from employees
+    where first_name = 'Hercules'
+    and last_name LIKE 'B%'
+    
+# 6-- List all employees in the Sales department, including their employee number, last name, first name, and department name.
+    select dept_emp.emp_no, employees.last_name, employees.first_name, departments.dept_name
+    into sales_dept
+    from dept_emp
+    join employees
+    using (emp_no)
+    JOIN departments
+    using (dept_no)
+    
+    
+    
+# 7-- List all employees in the Sales and Development departments, including their employee number, last name, first name, and ------- department name.
+    select dept_emp.emp_no, employees.last_name, employees.first_name, departments.dept_name
+    into Sales_Development_dep
+    from dept_emp
+    join employees
+    using (emp_no)
+    join departments
+    using (dept_no)
+    where departments.dept_name = 'Sales' 
+    or departments.dept_name = 'Development'
+
+# 8-- In descending order, list the frequency count of employee last names, i.e., how many employees share each last name.
+    select last_name,
+    count(last_name) AS "frequency"
+    from employees
+    group by last_name
+    order by
+    count (last_name) desc;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    
